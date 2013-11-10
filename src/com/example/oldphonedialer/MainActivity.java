@@ -31,8 +31,8 @@ public class MainActivity extends Activity implements OnClickListener,
 	Display display;
 	float pivotX, pivotY;
 	float minScale;
-	float deg, deg0, deltadeg, ivGetDeg,angle;
-	
+	float deg, deg0, deltadeg, ivGetDeg, angle;
+
 	RotateAnimation anim;
 
 	@Override
@@ -92,27 +92,33 @@ public class MainActivity extends Activity implements OnClickListener,
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN: // нажатие
-			deg0 = (float) -(Math.atan2(deltaX, deltaY) * (180 / Math.PI));
+			deg0 = (float) (Math.atan2(deltaX, deltaY) * (180 / Math.PI)) + 180;
 			ivGetDeg = imageView1.getRotation();
 			break;
 		case MotionEvent.ACTION_MOVE: // движение
 			imageView1.setAnimation(null);
-			deltaX = x - pivotX;
-			deltaY = y - pivotY;
-			angle = (float) -(Math.atan2(deltaX, deltaY) * (180 / Math.PI));
-			deltadeg = angle- deg0;
-			deg = ivGetDeg + deltadeg;
 
-			//if(imageView1.getRotation()>(-10)){
+			angle = (float) (Math.atan2(deltaX, deltaY) * (180 / Math.PI)) + 180;
+
+			if (imageView1.getRotation() <= (325)) {
+				deltadeg = deg0 - angle;
+				if (deltadeg < 0) {
+					deltadeg = 360 + deltadeg;
+				}
+				deg = ivGetDeg + deltadeg;
+
 				imageView1.setRotation(deg);
-			//}
+			}
+			//if (deltadeg > 327){deltadeg = 0;}
+			
 
 			break;
 		case MotionEvent.ACTION_UP: // отпускание
 
-			anim = new RotateAnimation(deltadeg, 0f, pivotX, pivotX);
+			anim = new RotateAnimation(imageView1.getRotation(), -0f, pivotX,
+					pivotX);
 			imageView1.setRotation(0);
-			anim.setDuration(1100);
+			anim.setDuration((long) Math.abs(deltadeg * 5));
 
 			imageView1.startAnimation(anim);
 
@@ -121,7 +127,9 @@ public class MainActivity extends Activity implements OnClickListener,
 			break;
 		}
 		imageView1.invalidate();
-		tv1.setText("" + x + " " + y + " angle = " + imageView1.getRotation());
+		tv1.setText("" + deltaX + " " + deltaY + "\n iv.angle = "
+				+ imageView1.getRotation() + "\n Touch.angle = " + angle
+				+ "\n delta.angle = " + deltadeg);
 		return true;
 	}
 }
