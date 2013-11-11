@@ -4,12 +4,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
-    <TextView
-        android:id="@+id/tv1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:maxLines="5"
-        android:text="@string/hello_world" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/bg1" />
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
@@ -44,21 +45,6 @@
             android:src="@drawable/d" />
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/tv2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="15dp"
-        android:layout_marginLeft="12dp"
-        android:layout_marginRight="12dp"
-        android:gravity="center_horizontal"
-        android:text="number"
-        android:textColor="@color/bgreen"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
     <Button
         android:id="@+id/call"
         android:layout_width="wrap_content"
@@ -67,8 +53,9 @@
         android:layout_alignParentRight="true"
         android:layout_marginBottom="12dp"
         android:layout_marginRight="10dp"
-        android:background="@color/bgreen"
-        android:text="Call" />
+        android:background="@drawable/buttonshape"
+        android:text=" Call "
+        android:textSize="25sp" />
 
     <Button
         android:id="@+id/clear"
@@ -79,7 +66,39 @@
         android:layout_alignParentLeft="true"
         android:layout_marginBottom="12dp"
         android:layout_marginLeft="10dp"
-        android:background="@color/red"
-        android:text="Clear" />
+        android:background="@drawable/buttonred"
+        android:text=" Clear "
+        android:textSize="25sp" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="10dp"
+        android:gravity="center" >
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/numbg" />
+
+        <TextView
+            android:id="@+id/tv2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:gravity="center_horizontal"
+            android:text="number"
+            android:textColor="@color/dgreen"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
 </RelativeLayout>

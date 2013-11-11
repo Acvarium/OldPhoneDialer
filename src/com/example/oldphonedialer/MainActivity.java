@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,14 +21,15 @@ import android.widget.TextView;
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements OnTouchListener,
 		OnClickListener {
-
+ 
 	float x, y;
 	ImageView imageView1, iv2;
-	TextView tv1, tv2;
+	TextView  tv2;
 	Button clear, call;
 	float deg0, deltadeg, ivGetDeg, angle;
 	float pivotX, pivotY;
 	float deltaX, deltaY;
+	Typeface font;
 	String writeNumber;
 	RotateAnimation anim;
 
@@ -36,15 +38,19 @@ public class MainActivity extends Activity implements OnTouchListener,
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
 		imageView1 = (ImageView) findViewById(R.id.imageView1);
-		tv1 = (TextView) findViewById(R.id.tv1);
 		tv2 = (TextView) findViewById(R.id.tv2);
 		iv2 = (ImageView) findViewById(R.id.iv2);
 		call = (Button) findViewById(R.id.call);
 		clear = (Button) findViewById(R.id.clear);
 		writeNumber = "";
+		tv2.setText(writeNumber);
 		iv2.setOnTouchListener(this);
 		call.setOnClickListener(this);
 		clear.setOnClickListener(this);
+		font = Typeface.createFromAsset(getAssets(), "fonts/QumpellkaNo12.otf");  
+		tv2.setTypeface(font);
+		clear.setTypeface(font);
+		call.setTypeface(font);
 	}
 
 	private int angleToNum(float angle) {
@@ -153,23 +159,19 @@ public class MainActivity extends Activity implements OnTouchListener,
 		}
 		imageView1.invalidate();
 
-		tv1.setText("x = " + x + " y = " + y + "  " + imageView1.getRotation()
-				+ " \n deltadeg = " + deltadeg + " a = " + angle);
-
 		return true;
 	}
 
-    private void call() {
-        try {
-            Intent callIntent = new Intent(Intent.ACTION_CALL);
-            callIntent.setData(Uri.parse("tel:" + writeNumber));
-            startActivity(callIntent);
-        } catch (ActivityNotFoundException e) {
-            Log.e("helloandroid dialing example", "Call failed", e);
-        }
-    }
+	private void call() {
+		try {
+			Intent callIntent = new Intent(Intent.ACTION_CALL);
+			callIntent.setData(Uri.parse("tel:" + writeNumber));
+			startActivity(callIntent);
+		} catch (ActivityNotFoundException e) {
+			Log.e("helloandroid dialing example", "Call failed", e);
+		}
+	}
 
-	
 	@Override
 	public void onClick(View v) {
 		switch (v.getId()) {

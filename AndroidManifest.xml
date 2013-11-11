@@ -16,7 +16,7 @@
         <activity
             android:name="com.example.oldphonedialer.MainActivity"
             android:configChanges="orientation"
-            android:label="@string/app_name" >
+            android:label="@string/app_name" android:theme="@style/generalnotitle">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
