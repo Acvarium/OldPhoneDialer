@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,7 +22,7 @@ import android.widget.TextView;
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements OnTouchListener,
 		OnClickListener {
- 
+	private MediaPlayer aplo;
 	float x, y;
 	ImageView imageView1, iv2;
 	TextView  tv2;
@@ -37,6 +38,7 @@ public class MainActivity extends Activity implements OnTouchListener,
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
 		imageView1 = (ImageView) findViewById(R.id.imageView1);
 		tv2 = (TextView) findViewById(R.id.tv2);
 		iv2 = (ImageView) findViewById(R.id.iv2);
@@ -53,6 +55,9 @@ public class MainActivity extends Activity implements OnTouchListener,
 		call.setTypeface(font);
 	}
 
+	
+	
+	
 	private int angleToNum(float angle) {
 		// ----- 1
 		int a = 12;
@@ -121,10 +126,13 @@ public class MainActivity extends Activity implements OnTouchListener,
 		case MotionEvent.ACTION_DOWN: // нажатие
 			deg0 = (float) (Math.atan2(deltaX, deltaY) * (180 / Math.PI)) + 180;
 			ivGetDeg = imageView1.getRotation();
+			aplo = MediaPlayer.create(this, R.raw.frontsound);
+			aplo.setLooping(false);
+			aplo.start();
 			break;
 		case MotionEvent.ACTION_MOVE: // движение
 			imageView1.setAnimation(null);
-
+			
 			angle = (float) (Math.atan2(deltaX, deltaY) * (180 / Math.PI)) + 180;
 
 			if ((imageView1.getRotation() <= 325)
@@ -142,6 +150,11 @@ public class MainActivity extends Activity implements OnTouchListener,
 			if (imageView1.getRotation() < 346) {
 				anim = new RotateAnimation(imageView1.getRotation(), -0f,
 						pivotX, pivotY);
+				aplo.stop();
+				aplo = MediaPlayer.create(this, R.raw.backsound);
+				aplo.setLooping(false);
+				aplo.seekTo(1150- (int) Math.abs(deltadeg * 4) );
+				aplo.start();
 				int num = angleToNum(imageView1.getRotation());
 				if (num < 12) {
 					writeNumber = writeNumber + String.valueOf(num);
