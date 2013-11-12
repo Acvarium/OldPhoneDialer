@@ -14,15 +14,18 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements OnTouchListener,
 		OnClickListener {
+	final String LOG_TAG = "myLogs";
 	private MediaPlayer rotateS1, rotateS2;
 	float x, y;
 	ImageView imageView1, iv2, iv3;
@@ -36,6 +39,7 @@ public class MainActivity extends Activity implements OnTouchListener,
 	RotateAnimation anim;
 	boolean newtouch;
 	float mainButtonRadius;
+	boolean fingerStoper;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +55,7 @@ public class MainActivity extends Activity implements OnTouchListener,
 		plus = (Button) findViewById(R.id.plus);
 		gr = (Button) findViewById(R.id.gr);
 		clear = (Button) findViewById(R.id.clear);
+		
 
 		writeNumber = "";
 		tv2.setText(writeNumber);
@@ -62,6 +67,14 @@ public class MainActivity extends Activity implements OnTouchListener,
 		asterisk.setOnClickListener(this);
 		gr.setOnClickListener(this);
 
+		clear.setOnLongClickListener(new OnLongClickListener() {
+		    public boolean onLongClick(View arg0) {
+				writeNumber = "";
+				tv2.setText(writeNumber);
+		        return true;    // <- set to true
+		    }
+		});
+		
 		font = Typeface.createFromAsset(getAssets(), "fonts/QumpellkaNo12.otf");
 		tv2.setTypeface(font);
 	}
@@ -72,9 +85,7 @@ public class MainActivity extends Activity implements OnTouchListener,
 	    }
 	    return s.substring(0, s.length()-1);
 	}
-
-
-
+	
 	private String angleToNum(float angle) {
 		// ----- 1
 		String a = "";
@@ -152,7 +163,7 @@ public class MainActivity extends Activity implements OnTouchListener,
 
 		switch (event.getAction()) {
 		case MotionEvent.ACTION_DOWN: // нажатие
-
+			fingerStoper = true;
 			if (pointInPosition(x, y, pivotX, pivotY, mainButtonRadius)) {
 				iv3.setVisibility(View.VISIBLE);
 				newtouch = false;
@@ -168,11 +179,16 @@ public class MainActivity extends Activity implements OnTouchListener,
 
 			break;
 		case MotionEvent.ACTION_MOVE: // движение
-
-			if (newtouch) {
+			
+			angle = (float) (Math.atan2(deltaX, deltaY) * (180 / Math.PI)) + 180;
+			
+			if ((angle > 220)&&(angle < 255)){fingerStoper = false;}
+			if (angle > 245){fingerStoper = true;}
+			
+			if ((newtouch)&&(fingerStoper)) {
 				imageView1.setAnimation(null);
-				angle = (float) (Math.atan2(deltaX, deltaY) * (180 / Math.PI)) + 180;
-
+				
+				Log.d(LOG_TAG, "Angle = " + angle);
 				if ((imageView1.getRotation() <= 325)
 						|| (imageView1.getRotation() > 350)) {
 					deltadeg = deg0 - angle;
@@ -187,6 +203,7 @@ public class MainActivity extends Activity implements OnTouchListener,
 		case MotionEvent.ACTION_UP: // отпускание
 			iv3.setVisibility(View.INVISIBLE);
 			// iv2.setImageResource(R.drawable.d);
+			
 			if (newtouch) {
 				if (imageView1.getRotation() < 346) {
 					anim = new RotateAnimation(imageView1.getRotation(), -0f,
@@ -229,7 +246,6 @@ public class MainActivity extends Activity implements OnTouchListener,
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
-		// TODO Auto-generated method stub
 		Intent intent;
 		switch (item.getItemId()) {
 		case R.id.action_settings:
