@@ -23,27 +23,62 @@
             android:layout_margin="10dp"
             android:layout_weight="1" >
 
-            <Button
-                android:id="@+id/call"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignRight="@+id/relativeLayout2"
                 android:layout_below="@+id/relativeLayout2"
-                android:background="@drawable/buttonshape"
-                android:layout_margin="5dp"
-                android:text=" Call  "
-                android:textSize="25sp" />
+                android:layout_centerHorizontal="true"
+                android:layout_weight="1"
+                android:orientation="horizontal" >
 
-            <Button
-                android:id="@+id/clear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignLeft="@+id/relativeLayout2"
-                android:layout_below="@+id/relativeLayout2"
-                android:background="@drawable/buttonred"
-                android:layout_margin="5dp"
-                android:text=" Clear "
-                android:textSize="25sp" />
+                <Button
+                    android:id="@+id/plus"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/buttonshape"
+                    android:text=" + "
+                    android:textSize="@dimen/button_text_size" />
+
+                <Button
+                    android:id="@+id/asterisk"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/buttonshape"
+                    android:text=" * "
+                    android:textSize="@dimen/button_text_size" />
+
+                <Button
+                    android:id="@+id/gr"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="3dp"
+                    android:background="@drawable/buttonshape"
+                    android:text=" # "
+                    android:textSize="@dimen/button_text_size" />
+
+                <Button
+                    android:id="@+id/clear"
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/relativeLayout2"
+                    android:layout_below="@+id/relativeLayout2"
+                    android:layout_margin="5dp"
+                    android:background="@drawable/buttonred"
+                    android:text=" C "
+                    android:textSize="@dimen/button_text_size" />
+            </LinearLayout>
 
             <RelativeLayout
                 android:id="@+id/relativeLayout2"
@@ -66,11 +101,12 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="25dp"
                     android:gravity="center_horizontal"
+                    android:maxLength="14"
                     android:text="number"
                     android:textColor="@color/dgreen"
-                    android:textSize="25sp"
-                    android:maxLength="14"
+                    android:textSize="@dimen/text_size"
                     android:textStyle="bold" />
             </RelativeLayout>
         </RelativeLayout>
@@ -106,6 +142,15 @@
                 android:layout_centerInParent="true"
                 android:adjustViewBounds="true"
                 android:src="@drawable/d" />
+
+            <ImageView
+                android:id="@+id/iv3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:adjustViewBounds="true"
+                android:src="@drawable/d2"
+                android:visibility="invisible" />
         </RelativeLayout>
     </LinearLayout>
 
