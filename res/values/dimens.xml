@@ -6,6 +6,6 @@
     <dimen name="margin_top">10sp</dimen>
       <dimen name="margin_bottom">10sp</dimen>
       <dimen name="button_text_size">25sp</dimen>
-      <dimen name="text_size">20sp</dimen>
+      <dimen name="text_size">19sp</dimen>
 
 </resources>

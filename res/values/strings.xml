@@ -5,9 +5,9 @@
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="about">About</string>
+    <string name="sound">Sound enable</string>
     <string name="JFF">I made this program just for fun and to explore aspects of programming for android. 
         The program is developed under the GNU GPLv3 license. 
-        \nThe program code is available at: <i>https://github.com/Acvarium/OldPhoneDialer.git </i>
-        \nMy E-mail: <i>vshmorgun@yandex.ru </i>  </string>
+        \nThe program code is available at: <i>https://github.com/Acvarium/OldPhoneDialer.git </i>        \nMy E-mail: <i>vshmorgun@yandex.ru </i></string>
 
 </resources>

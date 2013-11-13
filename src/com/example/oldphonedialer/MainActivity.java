@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -20,12 +22,13 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 @SuppressLint("NewApi")
 public class MainActivity extends Activity implements OnTouchListener,
 		OnClickListener {
 	final String LOG_TAG = "myLogs";
+	public static final String APP_PREFERENCES = "data";
+
 	private MediaPlayer rotateS1, rotateS2;
 	float x, y;
 	ImageView imageView1, iv2, iv3;
@@ -40,11 +43,16 @@ public class MainActivity extends Activity implements OnTouchListener,
 	boolean newtouch;
 	float mainButtonRadius;
 	boolean fingerStoper;
+	boolean soundEnable;
+
+	SharedPreferences sPref;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
+
+		sPref = getSharedPreferences(APP_PREFERENCES, MODE_PRIVATE);
 
 		imageView1 = (ImageView) findViewById(R.id.imageView1);
 		tv2 = (TextView) findViewById(R.id.tv2);
@@ -55,7 +63,9 @@ public class MainActivity extends Activity implements OnTouchListener,
 		plus = (Button) findViewById(R.id.plus);
 		gr = (Button) findViewById(R.id.gr);
 		clear = (Button) findViewById(R.id.clear);
-		
+
+		rotateS1 = MediaPlayer.create(this, R.raw.frontsound);
+		rotateS2 = MediaPlayer.create(this, R.raw.backsound);
 
 		writeNumber = "";
 		tv2.setText(writeNumber);
@@ -67,25 +77,42 @@ public class MainActivity extends Activity implements OnTouchListener,
 		asterisk.setOnClickListener(this);
 		gr.setOnClickListener(this);
 
+		readSettings();
+
 		clear.setOnLongClickListener(new OnLongClickListener() {
-		    public boolean onLongClick(View arg0) {
+			public boolean onLongClick(View arg0) {
 				writeNumber = "";
 				tv2.setText(writeNumber);
-		        return true;    // <- set to true
-		    }
+				return true; // <- set to true
+			}
 		});
-		
+
 		font = Typeface.createFromAsset(getAssets(), "fonts/QumpellkaNo12.otf");
 		tv2.setTypeface(font);
 	}
 
-	public String removeLastChar(String s) {
-	    if (s == null || s.length() == 0) {
-	        return s;
-	    }
-	    return s.substring(0, s.length()-1);
+	@Override
+	protected void onResume() {
+		super.onResume();
+		readSettings();
 	}
-	
+
+	private void readSettings() {
+		String sNo = "no";
+		if (sNo.equals(loadText("soundEnable"))) {
+			soundEnable = false;
+		} else {
+			soundEnable = true;
+		}
+	}
+
+	public String removeLastChar(String s) {
+		if (s == null || s.length() == 0) {
+			return s;
+		}
+		return s.substring(0, s.length() - 1);
+	}
+
 	private String angleToNum(float angle) {
 		// ----- 1
 		String a = "";
@@ -172,49 +199,67 @@ public class MainActivity extends Activity implements OnTouchListener,
 				newtouch = true;
 				deg0 = (float) (Math.atan2(deltaX, deltaY) * (180 / Math.PI)) + 180;
 				ivGetDeg = imageView1.getRotation();
-				rotateS1 = MediaPlayer.create(this, R.raw.frontsound);
-				rotateS1.setLooping(false);
-				rotateS1.start();
+				if (soundEnable) {
+
+					rotateS1.setLooping(false);
+					rotateS1.start();
+
+				}
 			}
 
 			break;
 		case MotionEvent.ACTION_MOVE: // движение
-			
+
 			angle = (float) (Math.atan2(deltaX, deltaY) * (180 / Math.PI)) + 180;
-			
-			if ((angle > 220)&&(angle < 255)){fingerStoper = false;}
-			if (angle > 245){fingerStoper = true;}
-			
-			if ((newtouch)&&(fingerStoper)) {
-				imageView1.setAnimation(null);
-				
-				Log.d(LOG_TAG, "Angle = " + angle);
-				if ((imageView1.getRotation() <= 325)
-						|| (imageView1.getRotation() > 350)) {
-					deltadeg = deg0 - angle;
-					if (deltadeg < 0) {
-						deltadeg = 360 + deltadeg;
+
+			if ((angle > 220) && (angle < 255)) {
+				fingerStoper = false;
+			}
+			if (angle > 245) {
+				fingerStoper = true;
+			}
+
+			if (newtouch) {
+				if (fingerStoper) {
+					imageView1.setAnimation(null);
+
+					if ((imageView1.getRotation() <= 325)
+							|| (imageView1.getRotation() > 350)) {
+						deltadeg = deg0 - angle;
+						if (deltadeg < 0) {
+							deltadeg = 360 + deltadeg;
+						}
+						imageView1.setRotation(ivGetDeg + deltadeg);
 					}
-					imageView1.setRotation(ivGetDeg + deltadeg);
+				}
+			} else {
+				if (pointInPosition(x, y, pivotX, pivotY, mainButtonRadius)) {
+					iv3.setVisibility(View.VISIBLE);
+				} else {
+					iv3.setVisibility(View.INVISIBLE);
 				}
 			}
 
 			break;
 		case MotionEvent.ACTION_UP: // отпускание
 			iv3.setVisibility(View.INVISIBLE);
-			// iv2.setImageResource(R.drawable.d);
-			
+
 			if (newtouch) {
 				if (imageView1.getRotation() < 346) {
 					anim = new RotateAnimation(imageView1.getRotation(), -0f,
 							pivotX, pivotY);
-					rotateS2 = MediaPlayer.create(this, R.raw.backsound);
-					rotateS2.setLooping(false);
-					rotateS2.seekTo(1150 - (int) Math.abs(deltadeg * 4));
-					rotateS2.start();
+					if (soundEnable) {
+						
+						rotateS2.setLooping(false);
+						rotateS2.seekTo(1150 - (int) Math.abs(deltadeg * 4));
+						rotateS2.start();
 
-					writeNumber = writeNumber
-							+ angleToNum(imageView1.getRotation());
+					}
+					if (writeNumber.length() < 17) {
+						writeNumber = writeNumber
+								+ angleToNum(imageView1.getRotation());
+					}
+
 					tv2.setText(writeNumber);
 
 					imageView1.setRotation(0);
@@ -224,7 +269,9 @@ public class MainActivity extends Activity implements OnTouchListener,
 					imageView1.setRotation(0);
 				}
 			} else {
-				call();
+				if (pointInPosition(x, y, pivotX, pivotY, mainButtonRadius)) {
+					call();
+				}
 			}
 		case MotionEvent.ACTION_CANCEL:
 			break;
@@ -236,13 +283,17 @@ public class MainActivity extends Activity implements OnTouchListener,
 
 	// Made phone call
 	private void call() {
-		try {
-			Intent callIntent = new Intent(Intent.ACTION_CALL);
-			callIntent.setData(Uri.parse("tel:" + writeNumber));
-			startActivity(callIntent);
-		} catch (ActivityNotFoundException e) {
-			Log.e("helloandroid dialing example", "Call failed", e);
+
+		if (writeNumber != null && !writeNumber.isEmpty()) {
+			try {
+				Intent callIntent = new Intent(Intent.ACTION_CALL);
+				callIntent.setData(Uri.parse("tel:" + Uri.encode(writeNumber)));
+				startActivity(callIntent);
+			} catch (ActivityNotFoundException e) {
+				Log.e("helloandroid dialing example", "Call failed", e);
+			}
 		}
+
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -264,6 +315,17 @@ public class MainActivity extends Activity implements OnTouchListener,
 		return super.onOptionsItemSelected(item);
 	}
 
+	void saveText(String lname, String data) {
+		Editor ed = sPref.edit();
+		ed.putString(lname, data);
+		ed.commit();
+	}
+
+	String loadText(String lname) {
+		String savedText = sPref.getString(lname, "");
+		return savedText;
+	}
+
 	// Processing button presses
 	@Override
 	public void onClick(View v) {
@@ -273,16 +335,22 @@ public class MainActivity extends Activity implements OnTouchListener,
 			tv2.setText(writeNumber);
 			break;
 		case R.id.asterisk:
-			writeNumber = writeNumber + "*";
-			tv2.setText(writeNumber);
+			if (writeNumber.length() < 17) {
+				writeNumber = writeNumber + "*";
+				tv2.setText(writeNumber);
+			}
 			break;
 		case R.id.gr:
-			writeNumber = writeNumber + "#";
-			tv2.setText(writeNumber);
+			if (writeNumber.length() < 17) {
+				writeNumber = writeNumber + "#";
+				tv2.setText(writeNumber);
+			}
 			break;
 		case R.id.plus:
-			writeNumber = writeNumber + "+";
-			tv2.setText(writeNumber);
+			if (writeNumber.length() < 17) {
+				writeNumber = writeNumber + "+";
+				tv2.setText(writeNumber);
+			}
 			break;
 		default:
 			break;

@@ -118,9 +118,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/margin_top"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
+        android:layout_marginTop="@dimen/margin_top"
         android:gravity="center" >
 
         <ImageView
@@ -139,8 +139,6 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="15dp"
             android:gravity="center_horizontal"
-            android:maxLength="15"
-            android:text="number"
             android:textColor="@color/dgreen"
             android:textSize="@dimen/text_size"
             android:textStyle="bold" />
